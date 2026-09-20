@@ -1,45 +1,26 @@
 # SolAudit — EVM Smart Contract Vulnerability & Reentrancy Hunter
 
-[![OpenGAP Compliant](https://img.shields.io/badge/OpenGAP-0.1.0-blue.svg)](https://opengap.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <strong>Build. Verify. Prove Your Agent Can Travel.</strong>
+</p>
 
-Automated formal verification and bytecode symbolic execution agent detecting flash-loan reentrancy, access control bypasses, and arithmetic underflows.
+An enterprise-grade, OpenGAP-compliant AI agent for **Cybersecurity**, engineered for framework portability across OpenAI SDK, CrewAI, Claude Code, and Lyzr.
 
-## Domain Category
-**Cybersecurity**
+## Domain Overview
+- **Category:** Cybersecurity
+- **Primary Role:** Principal Web3 Security Auditor & Formal Verification Specialist
+- **Architecture:** OpenGAP 0.1.0 Git-Native Agent
 
-## Architecture
-- **OpenGAP Specification**: `0.1.0`
-- **Role**: Principal Web3 Security Auditor & Formal Verification Specialist
-- **Primary Goal**: Exhaustively identify zero-day vulnerabilities in Solidity/Vyper decentralized finance protocols prior to mainnet deployment.
+## Quick Start & Verification
+```bash
+# Validate OpenGAP compliance
+opengap validate
 
-## Skills Included
-- **`reentrancy-state-analysis`**: Detecting cross-contract and read-only reentrancy vectors where external calls precede state modifications.
-- **`flash-loan-governance-simulation`**: Simulating price oracle manipulation and governance vote hijacking across DEX liquidity pools.
-- **`formal-invariant-checking`**: Formulating mathematical invariants in Certora/SMT-LIB to prove protocol solvency under adversarial conditions.
-
-## Tools Schema
-- **`run-symbolic-execution`**: Execute bytecode symbolic exploration to discover execution paths violating security invariants.
-- **`simulate-flash-loan-attack`**: Model multi-step atomized transactions borrowing uncollateralized capital to distort spot price curves.
-- **`audit-access-control-matrix`**: Verify function visibility modifiers, initialization routines, and multi-signature governance thresholds.
-
-## Explainability & Verification
-Full explainability compliance under OpenGAP Checkpoint 2 is detailed in [EXPLAINABILITY.md](EXPLAINABILITY.md), covering:
-- Decision Reasoning
-- Data Sources and Inputs Used
-- Confidence Scoring Methodology
-- Source Attribution Protocol
-- Bias Awareness
-- Limitation Taxonomy per Domain
-- Uncertainty Quantification Approach
-
-## Multi-Framework Compatibility
-Adapters and visa export configurations are included in `exports/`:
-- Anthropic Claude (`claude-system-prompt.txt`)
-- OpenAI Assistants (`openai-assistant.json`)
-- LangChain (`langchain-agent.json`)
-- CrewAI (`crewai-agent.json`)
-- AutoGen (`autogen-agent.json`)
+# Export to target framework
+opengap export --format crewai
+opengap export --format lyzr
+opengap export --format openai-sdk
+```
 
 ## License
-MIT License
+MIT

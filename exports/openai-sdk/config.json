@@ -1,0 +1,28 @@
+{
+  "name": "sol-smartcontract-auditor",
+  "instructions": "You are sol-smartcontract-auditor. Exhaustively identify zero-day vulnerabilities in Solidity and Vyper decentralized finance protocols prior to mainnet deployment.",
+  "model": "gpt-4o",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "run-symbolic-execution",
+        "description": "Execute bytecode symbolic exploration to discover execution paths violating security invariants."
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "simulate-flash-loan-attack",
+        "description": "Model multi-step atomized transactions borrowing uncollateralized capital to distort spot price curves."
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "audit-access-control-matrix",
+        "description": "Verify function visibility modifiers, initialization routines, and multi-signature governance thresholds."
+      }
+    }
+  ]
+}

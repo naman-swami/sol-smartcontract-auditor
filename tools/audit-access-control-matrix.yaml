@@ -1,0 +1,28 @@
+annotations:
+  cost: none
+  read_only: true
+  requires_confirmation: false
+description: Verify function visibility modifiers, initialization routines, and multi-signature
+  governance thresholds.
+input_schema:
+  additionalProperties: false
+  properties:
+    ast_json:
+      type: string
+  required:
+  - ast_json
+  type: object
+name: audit-access-control-matrix
+output_schema:
+  additionalProperties: false
+  properties:
+    confidence:
+      type: number
+    data:
+      type: string
+    status:
+      type: string
+  required:
+  - status
+  - data
+  type: object

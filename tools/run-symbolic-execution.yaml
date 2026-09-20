@@ -1,0 +1,32 @@
+annotations:
+  cost: none
+  read_only: true
+  requires_confirmation: false
+description: Execute bytecode symbolic exploration to discover execution paths violating
+  security invariants.
+input_schema:
+  additionalProperties: false
+  properties:
+    contract_source:
+      type: string
+    max_depth:
+      type: number
+    solc_version:
+      type: string
+  required:
+  - contract_source
+  type: object
+name: run-symbolic-execution
+output_schema:
+  additionalProperties: false
+  properties:
+    confidence:
+      type: number
+    data:
+      type: string
+    status:
+      type: string
+  required:
+  - status
+  - data
+  type: object

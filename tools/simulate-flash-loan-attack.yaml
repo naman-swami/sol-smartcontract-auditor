@@ -1,0 +1,31 @@
+annotations:
+  cost: none
+  read_only: true
+  requires_confirmation: false
+description: Model multi-step atomized transactions borrowing uncollateralized capital
+  to distort spot price curves.
+input_schema:
+  additionalProperties: false
+  properties:
+    borrow_amount_eth:
+      type: number
+    pool_address:
+      type: string
+  required:
+  - pool_address
+  - borrow_amount_eth
+  type: object
+name: simulate-flash-loan-attack
+output_schema:
+  additionalProperties: false
+  properties:
+    confidence:
+      type: number
+    data:
+      type: string
+    status:
+      type: string
+  required:
+  - status
+  - data
+  type: object
