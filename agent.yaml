@@ -1,0 +1,6 @@
+spec_version: "0.1.0"
+name: sol-smartcontract-auditor
+version: "0.1.0"
+description: "Automated formal verification and bytecode symbolic execution agent detecting flash-loan reentrancy, access control bypasses, and arithmetic underflows."
+model:
+  preferred: llama-3.3-70b-versatile

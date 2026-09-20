@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "audit-access-control-matrix",
+  "description": "Verify function visibility modifiers, initialization routines, and multi-signature governance thresholds.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "ast_json": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "ast_json"
+    ]
+  }
+}

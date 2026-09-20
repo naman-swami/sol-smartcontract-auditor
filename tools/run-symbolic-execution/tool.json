@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "run-symbolic-execution",
+  "description": "Execute bytecode symbolic exploration to discover execution paths violating security invariants.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "contract_address_or_code": {
+        "type": "string"
+      },
+      "solc_version": {
+        "type": "string"
+      },
+      "max_depth": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "contract_address_or_code"
+    ]
+  }
+}
