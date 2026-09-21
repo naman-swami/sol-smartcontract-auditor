@@ -1,0 +1,24 @@
+rules:
+  - id: SWC-107
+    name: Reentrancy
+    severity: CRITICAL
+    pattern: ".call{value:"
+    exclusion: "nonReentrant"
+    description: "External ether transfer occurs without reentrancy guard or prior state update."
+    remediation: "Apply OpenZeppelin ReentrancyGuard and adhere strictly to Checks-Effects-Interactions (CEI)."
+
+  - id: SWC-115
+    name: Authorization via tx.origin
+    severity: HIGH
+    pattern: "tx.origin"
+    exclusion: null
+    description: "tx.origin used for access control, rendering contract vulnerable to phishing attacks."
+    remediation: "Replace tx.origin with msg.sender for sender authentication."
+
+  - id: SWC-120
+    name: Weak Randomness from Block Properties
+    severity: MEDIUM
+    pattern: "block.timestamp"
+    exclusion: null
+    description: "block.timestamp or blockhash used as randomness source, manipulable by miners/validators."
+    remediation: "Integrate Chainlink VRF or verifiable commit-reveal randomness schemes."

@@ -1,25 +1,29 @@
+import os
 import pytest
-from src.contract_audit_engine import SmartContractAuditorEngine
+from analyzers.solidity_static_analyzer import SoliditySecurityAnalyzer
 
-def test_reentrancy_detection():
-    engine = SmartContractAuditorEngine()
-    code = """
-function withdraw(uint amount) external {
-    (bool ok, ) = msg.sender.call{value: amount}("");
-    balances[msg.sender] -= amount;
-}
-"""
-    res = engine.audit_solidity_code(code)
-    assert res["security_tier"] == "CRITICAL"
-    assert any(f["type"] == "REENTRANCY_RISK" for f in res["findings"])
+@pytest.fixture
+def analyzer():
+    return SoliditySecurityAnalyzer()
 
-def test_safe_contract():
-    engine = SmartContractAuditorEngine()
-    code = """
-function safeWithdraw(uint amount) external nonReentrant {
-    balances[msg.sender] -= amount;
-    (bool ok, ) = msg.sender.call{value: amount}("");
-}
-"""
-    res = engine.audit_solidity_code(code)
-    assert res["security_tier"] == "CLEAN"
+def test_vulnerable_contract_detection(analyzer):
+    fixtures_dir = os.path.join(os.path.dirname(__file__), "..", "fixtures", "sample_contracts")
+    vuln_path = os.path.join(fixtures_dir, "vuln_vault.sol")
+    res = analyzer.audit_file(vuln_path)
+    
+    assert res["risk_tier"] == "CRITICAL"
+    assert res["deployment_gate"] == "BLOCK_DEPLOYMENT"
+    assert res["critical_count"] >= 1
+    
+    rule_ids = [f["rule_id"] for f in res["findings"]]
+    assert "SWC-107" in rule_ids
+    assert "SWC-115" in rule_ids
+
+def test_secure_contract_approval(analyzer):
+    fixtures_dir = os.path.join(os.path.dirname(__file__), "..", "fixtures", "sample_contracts")
+    sec_path = os.path.join(fixtures_dir, "secure_vault.sol")
+    res = analyzer.audit_file(sec_path)
+    
+    assert res["risk_tier"] == "CLEAN"
+    assert res["deployment_gate"] == "APPROVED_FOR_AUDIT"
+    assert res["total_issues"] == 0
