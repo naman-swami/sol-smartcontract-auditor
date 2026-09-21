@@ -58,7 +58,7 @@ sol-smartcontract-auditor/
 │   └── vulnerability_taxonomy.md    # SWC registry mapping
 ├── tests/
 │   └── test_agent.py                # Security audit test suite
-├── main.py                          # Audit CLI entry point
+├── scan.py                          # Audit CLI entry point
 └── requirements.txt
 ```
 
@@ -69,5 +69,5 @@ sol-smartcontract-auditor/
 pytest tests/ -v
 
 # Audit benchmark vulnerable contract
-python main.py --demo
+python scan.py --demo
 ```
