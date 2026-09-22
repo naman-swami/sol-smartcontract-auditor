@@ -1,73 +1,62 @@
 # Sol Smart Contract Security Auditor
 
-[![OpenGAP](https://img.shields.io/badge/OpenGAP-0.1.0-blue.svg)](agent.yaml)
-[![Security](https://img.shields.io/badge/Security-EVM_Static_Analysis-red.svg)](reports/vulnerability_taxonomy.md)
-[![Standards](https://img.shields.io/badge/Registry-SWC_Standard-darkblue.svg)](reports/vulnerability_taxonomy.md)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](requirements.txt)
-[![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
+> **Automated Solidity Static Analysis & Formal Verification Engine**  
+> Detecting SWC-107 Reentrancy, Checks-Effects-Interactions (CEI) Violations, and Privilege Escalation Vectors.
 
-A static analysis security engine for Solidity smart contracts, detecting SWC-107 reentrancy vulnerabilities, Checks-Effects-Interactions (CEI) pattern violations, and SWC-115 `tx.origin` authentication flaws.
+---
 
-```
-                  ┌───────────────────────────────┐
-                  │ Solidity Contract Source Code │
-                  └───────────────┬───────────────┘
-                                  │
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │  analyzers/solidity_analyzer  │
-                  └───────────────┬───────────────┘
-                                  │
-               ┌──────────────────┴──────────────────┐
-               ▼                                     ▼
-     ┌───────────────────┐                 ┌───────────────────┐
-     │  SWC-107 (Calls)  │                 │ SWC-115 (Origin)  │
-     └─────────┬─────────┘                 └─────────┬─────────┘
-               │                                     │
-               └──────────────────┬──────────────────┘
-                                  │
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │ Security Triage & Action Gate │
-                  │  (BLOCK_DEPLOYMENT / PASS)    │
-                  └───────────────────────────────┘
-```
-
-## Features
-
-- **Reentrancy Detection (SWC-107)**: Identifies low-level `.call{value: ...}` executed without mutex guards.
-- **Phishing Authorization Detection (SWC-115)**: Flags dangerous `tx.origin` usage in access controls.
-- **Fixture Benchmarking**: Comes pre-packaged with verified vulnerable and secure Solidity contracts.
-- **Deployment Gating**: Evaluates severity tiers to provide binary `BLOCK_DEPLOYMENT` vs `APPROVED_FOR_AUDIT` decisions.
-
-## Directory Structure
+### Vulnerability Detection Taxonomy
 
 ```
-sol-smartcontract-auditor/
-├── agent.yaml                       # OpenGAP 0.1.0 Manifest
-├── EXPLAINABILITY.md                # 7-checkpoint security audit provenance
-├── analyzers/
-│   └── solidity_static_analyzer.py  # Static pattern analysis engine
-├── rules/
-│   └── reentrancy_rules.yaml        # SWC rule definitions
-├── fixtures/
-│   └── sample_contracts/
-│       ├── vuln_vault.sol           # Intentionally vulnerable contract
-│       └── secure_vault.sol         # Hardened reference contract
-├── reports/
-│   └── vulnerability_taxonomy.md    # SWC registry mapping
-├── tests/
-│   └── test_agent.py                # Security audit test suite
-├── scan.py                          # Audit CLI entry point
-└── requirements.txt
+Solidity Source AST
+       │
+       ▼
+┌───────────────────────────────────────────────┐
+│       sol_smartcontract_auditor Engine        │
+│  (slither.config.json & rules/reentrancy_rules)│
+└──────┬────────────────┬───────────────┬───────┘
+       │                │               │
+       ▼                ▼               ▼
+ [SWC-107 Check]   [SWC-115 Check] [SWC-104 Check]
+  Reentrancy Call   tx.origin Auth  Unchecked Call
+  External State    Phishing Risk   Silent Revert
 ```
 
-## Quick Start
+| SWC ID | Vulnerability Class | Detection Pattern | Target Impact |
+| :--- | :--- | :--- | :--- |
+| **SWC-107** | Reentrancy | External `.call{value: ...}("")` invoked prior to internal storage state decrement | Critical (Drain of funds) |
+| **SWC-115** | Authorization through `tx.origin` | Use of `tx.origin == owner` rather than `msg.sender` | High (Phishing / Proxy bypass) |
+| **SWC-104** | Unchecked Call Return Value | Low-level address calls without boolean success verification | Medium (State desynchronization) |
+
+---
+
+### Static Analysis Sample Output
+
+Auditing vulnerable test fixture `fixtures/sample_contracts/vuln_vault.sol`:
+
+```solidity
+// Vulnerability in vuln_vault.sol (Lines 14-17)
+(bool sent, ) = msg.sender.call{value: bal}(""); // External call BEFORE state mutation!
+require(sent, "Failed to send Ether");
+balances[msg.sender] = 0;                        // State mutation happens too late!
+```
+
+**Auditor Detection Finding:**
+```console
+[HIGH RISK DETECTED] SWC-107: State variable 'balances[msg.sender]' updated after external call.
+Recommendation: Enforce Checks-Effects-Interactions pattern or utilize OpenZeppelin ReentrancyGuard.
+```
+
+---
+
+### Security Tooling & Audit CLI
 
 ```bash
-# Run security test suite
-pytest tests/ -v
-
-# Audit benchmark vulnerable contract
+# Scan default benchmark test contracts
 python scan.py --demo
+
+# Run rule validation unit tests
+pytest tests/ -v
 ```
+
+Rules are declaratively defined in `rules/reentrancy_rules.yaml`. Compiler settings, Slither AST passes, and gas optimizations are managed in [slither.config.json](slither.config.json).
