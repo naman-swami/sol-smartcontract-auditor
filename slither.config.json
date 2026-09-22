@@ -1,5 +1,10 @@
 {
-  "filter_paths": "node_modules",
+  "detectors_to_run": "reentrancy-eth,reentrancy-no-eth,tx-origin,unchecked-lowlevel,uninitialized-state,suicidal,arbitrary-send-erc20",
+  "detectors_to_exclude": "naming-convention,solc-version",
+  "solc_args": "--optimize --optimize-runs 200",
+  "filter_paths": "node_modules|tests|lib",
   "legacy_ast": false,
-  "solc_args": "--optimize"
+  "generate_patches": false,
+  "markdown_root": "reports/",
+  "json": "reports/slither_audit.json"
 }
